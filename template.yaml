@@ -1,0 +1,173 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  TweetAppUser
+
+  Sample SAM Template for TweetAppUser
+
+Globals:
+  Function:
+    Runtime: java11
+    MemorySize: 512
+    Timeout: 60
+    Environment:
+      Variables:
+        USERS_TABLE: !Ref UsersTable
+        TWEETS_TABLE: !Ref TweetsTable
+
+Resources:
+  UsersTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: loginId
+        Type: String
+  TweetsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: tweetId
+        Type: String
+  TweetAppUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.user.handler.CreateUserLambda::createUser
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /register
+            Method: POST
+
+  ReadUsersFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.user.handler.ReadUsersLambda::readUsers
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/users/all
+            Method: GET
+
+  SearchUsersFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.user.handler.SearchUserLambda::searchUsers
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref UsersTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/user/search/{username}
+            Method: GET
+  
+  CreateTweetFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.CreateTweetLambda::createTweet
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/{username}/add
+            Method: POST
+  ReadAllTweetsFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.ReadAllTweetsLambda::readTweets
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/all
+            Method: GET
+  ReadAllTweetsByUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.ReadAllTweetsByUserLambda::readAllUserTweets
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/{username}
+            Method: GET
+  DeleteTweetByUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.DeleteTweetLambda::deleteTweet
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/{username}/delete/{id}
+            Method: DELETE
+  UpdateTweetByUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.UpdateTweetHandler::updateTweet
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/update
+            Method: POST
+  LikeTweetByUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.LikeTweetLambda::likeTweet
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/like
+            Method: POST
+  ReplyTweetByUserFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: TweetAppUserFunction
+      Handler: com.tweetapp.lambda.tweets.handler.ReplyTweetLambda::replyTweet
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TweetsTable  
+      Events:
+        UserEvents:
+          Type: Api
+          Properties:
+            Path: /api/v1.0/tweets/reply
+            Method: POST

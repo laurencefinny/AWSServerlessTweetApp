@@ -66,20 +66,21 @@ public class ReadAllTweetsLambda {
 		dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 		reply.setUserId(s2);
 		reply.setReplied(s);
-		Date date1 = null;
-		try {
-			if (s3 != null && !(StringUtils.isNullOrEmpty(s3))) {
-				date1 = dateFormatter.parse(s3);
-			} else {
-				date1 = dateFormatter.parse("Thu May 27 18:34:09 UTC 2021");
-			}
-
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			date1 = dateFormatter.parse("Thu May 28 18:34:09 UTC 2021");
-		}
-		reply.setDateReplied(date1);
+		reply.setDateReplied(s3);
+//		Date date1 = null;
+//		try {
+//			if (s3 != null && !(StringUtils.isNullOrEmpty(s3))) {
+//				date1 = dateFormatter.parse(s3);
+//			} else {
+//				date1 = dateFormatter.parse("Thu May 27 18:34:09 UTC 2021");
+//			}
+//
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			date1 = dateFormatter.parse("Thu May 28 18:34:09 UTC 2021");
+//		}
+//		reply.setDateReplied(date1);
 		return reply;
 	}
 }
