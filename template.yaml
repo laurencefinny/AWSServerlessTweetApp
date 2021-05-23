@@ -6,6 +6,11 @@ Description: >
   Sample SAM Template for TweetAppUser
 
 Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
   Function:
     Runtime: java11
     MemorySize: 512
@@ -171,3 +176,8 @@ Resources:
           Properties:
             Path: /api/v1.0/tweets/reply
             Method: POST
+Outputs:
+
+  ApiUrl:
+    Description: URL of the Prod stage of the API endpoint
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
