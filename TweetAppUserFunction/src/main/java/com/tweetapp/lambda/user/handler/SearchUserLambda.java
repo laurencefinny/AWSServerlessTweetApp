@@ -1,5 +1,6 @@
 package com.tweetapp.lambda.user.handler;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,8 +38,10 @@ public class SearchUserLambda {
 			// TODO: handle exception
 			response.setStatusMessage("FAILURE");
 		}
+		Map<String, String> headers = new HashMap<>();
+        headers.put("Access-Control-Allow-Origin", "*"); //
 		String jsonString = mapper.writeValueAsString(response);
-		return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(jsonString);
+		return new APIGatewayProxyResponseEvent().withStatusCode(200).withHeaders(headers).withBody(jsonString);
 
 	}
 }

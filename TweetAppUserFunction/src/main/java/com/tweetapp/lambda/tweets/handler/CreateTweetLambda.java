@@ -2,6 +2,7 @@ package com.tweetapp.lambda.tweets.handler;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,8 +44,10 @@ public class CreateTweetLambda {
 			// TODO: handle exception
 			response.setStatusMessage("User Already Exists");
 		}
+		Map<String, String> headers = new HashMap<>();
+        headers.put("Access-Control-Allow-Origin", "*"); //
 		String jsonString = mapper.writeValueAsString(response);
-		return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(jsonString);
+		return new APIGatewayProxyResponseEvent().withStatusCode(200).withHeaders(headers).withBody(jsonString);
 
 	}
 }

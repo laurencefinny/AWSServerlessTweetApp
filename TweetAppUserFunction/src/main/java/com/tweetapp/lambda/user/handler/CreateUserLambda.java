@@ -1,5 +1,8 @@
 package com.tweetapp.lambda.user.handler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
@@ -36,8 +39,10 @@ public class CreateUserLambda {
 			// TODO: handle exception
 			response.setStatusMessage("User Already Exists");
 		}
+		Map<String, String> headers = new HashMap<>();
+        headers.put("Access-Control-Allow-Origin", "*"); //
 		String jsonString = mapper.writeValueAsString(response);
-		return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(jsonString);
+		return new APIGatewayProxyResponseEvent().withStatusCode(200).withHeaders(headers).withBody(jsonString);
 
 	}
 }

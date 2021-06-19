@@ -47,8 +47,10 @@ public class UpdateTweetHandler {
 			logger.error(e.getMessage());
 			response.setStatusMessage("Failure");
 		}
+		Map<String, String> headers = new HashMap<>();
+        headers.put("Access-Control-Allow-Origin", "*"); //
 		String jsonString = mapper.writeValueAsString(response);
-		return new APIGatewayProxyResponseEvent().withStatusCode(200).withBody(jsonString);
+		return new APIGatewayProxyResponseEvent().withStatusCode(200).withHeaders(headers).withBody(jsonString);
 
 	}
 }
